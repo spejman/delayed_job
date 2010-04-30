@@ -1,7 +1,11 @@
 module Delayed
   module MessageSending
     def send_later(method, *args)
-      Delayed::Job.enqueue Delayed::PerformableMethod.new(self, method.to_sym, args)
+      send_later_with_priority 0, method, *args
+    end
+
+    def send_later_with_priority(priority, method, *args)
+      Delayed::Job.enqueue Delayed::PerformableMethod.new(self, method.to_sym, args), priority
     end
     
     module ClassMethods

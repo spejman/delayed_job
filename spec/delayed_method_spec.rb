@@ -124,5 +124,23 @@ describe 'random ruby objects' do
     job.payload_object.args.should    == [1, 5]
     job.payload_object.perform.should == 'Once upon...'
   end
+  
+  it "should add a new entry to the job table with priority 2 when send_later_with_priority is called on the class" do
+    Delayed::Job.count.should == 0
+
+    RandomRubyObject.send_later_with_priority(2, :to_s)
+
+    job =  Delayed::Job.find(:first)
+    job.priority.should == 2
+  end
+
+  it "should add a new entry to the job table with priority 0 when send_later is called on the class" do
+    Delayed::Job.count.should == 0
+
+    RandomRubyObject.send_later(:to_s)
+
+    job =  Delayed::Job.find(:first)
+    job.priority.should == 0
+  end
 
 end
